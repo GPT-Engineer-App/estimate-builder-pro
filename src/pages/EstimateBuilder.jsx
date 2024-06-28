@@ -90,6 +90,17 @@ const EstimateBuilder = () => {
       ...prevLabor,
       [name]: value,
     }));
+    if (name === 'hrs' || name === 'laborHr') {
+      calculateLaborCost({ ...labor, [name]: value });
+    }
+  };
+
+  const calculateLaborCost = (updatedLabor) => {
+    const laborCost = parseFloat(updatedLabor.hrs || 0) * parseFloat(updatedLabor.laborHr || 0);
+    setLabor((prevLabor) => ({
+      ...prevLabor,
+      labor: laborCost.toFixed(2),
+    }));
   };
 
   const handleSaveEstimate = () => {
