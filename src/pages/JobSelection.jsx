@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const JobSelection = () => {
   const [selectedJob, setSelectedJob] = useState('');
-  const [jobDetails, setJobDetails] = useState({});
+  const [jobDetails, setJobDetails] = useState({
+    jobName: '',
+    parts: '',
+    labor: '',
+    totalEstimate: '',
+  });
   const [jobs, setJobs] = useState([]);
 
   const handleJobChange = (event) => {
-    const job = event.target.value;
-    setSelectedJob(job);
-    // Auto-fill functionality can be implemented here
-    // For now, we'll just set some dummy data
-    if (job === 'CAN Job 1') {
-      setJobDetails({
-        parts: 'Roof Kit, Roof Membrane',
-        labor: 'Repair Description, Notes',
-        totalEstimate: '$1000',
-      });
-    } else {
-      setJobDetails({});
-    }
+    const { name, value } = event.target;
+    setJobDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
   };
 
   const handleSaveJob = () => {
@@ -43,31 +43,77 @@ const JobSelection = () => {
       </header>
       <div className="mt-8">
         <h2 className="text-2xl mb-4">Job Configuration</h2>
-        <label htmlFor="job" className="block mb-2">Select a CAN Job:</label>
-        <select id="job" value={selectedJob} onChange={handleJobChange} className="mb-4 p-2 border">
-          <option value="">Select a job</option>
-          <option value="CAN Job 1">CAN Job 1</option>
-          <option value="CAN Job 2">CAN Job 2</option>
-        </select>
-        {selectedJob && (
-          <div>
-            <h3 className="text-xl mb-2">Job Details</h3>
-            <p><strong>Parts:</strong> {jobDetails.parts}</p>
-            <p><strong>Labor:</strong> {jobDetails.labor}</p>
-            <p><strong>Total Estimate:</strong> {jobDetails.totalEstimate}</p>
-            <button onClick={handleSaveJob} className="bg-blue-500 text-white p-2 mt-4">Save Job</button>
-          </div>
-        )}
+        <div className="mb-4">
+          <label htmlFor="jobName" className="block mb-2">Job Name:</label>
+          <Input
+            type="text"
+            id="jobName"
+            name="jobName"
+            value={jobDetails.jobName}
+            onChange={handleJobChange}
+            className="mb-4 p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="parts" className="block mb-2">Parts:</label>
+          <Input
+            type="text"
+            id="parts"
+            name="parts"
+            value={jobDetails.parts}
+            onChange={handleJobChange}
+            className="mb-4 p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="labor" className="block mb-2">Labor:</label>
+          <Input
+            type="text"
+            id="labor"
+            name="labor"
+            value={jobDetails.labor}
+            onChange={handleJobChange}
+            className="mb-4 p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="totalEstimate" className="block mb-2">Total Estimate:</label>
+          <Input
+            type="text"
+            id="totalEstimate"
+            name="totalEstimate"
+            value={jobDetails.totalEstimate}
+            onChange={handleJobChange}
+            className="mb-4 p-2 border w-full"
+          />
+        </div>
+        <Button onClick={handleSaveJob} className="bg-blue-500 text-white p-2 mt-4">Save Job</Button>
         <div className="mt-8">
           <h3 className="text-xl mb-2">Existing Jobs</h3>
-          <ul>
-            {jobs.map((job, index) => (
-              <li key={index} className="mb-2">
-                <strong>{job.name}</strong>: {job.parts}, {job.labor}, {job.totalEstimate}
-                <button onClick={() => handleDeleteJob(job.name)} className="bg-red-500 text-white p-1 ml-2">Delete</button>
-              </li>
-            ))}
-          </ul>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Job Name</TableHead>
+                <TableHead>Parts</TableHead>
+                <TableHead>Labor</TableHead>
+                <TableHead>Total Estimate</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {jobs.map((job, index) => (
+                <TableRow key={index}>
+                  <TableCell>{job.jobName}</TableCell>
+                  <TableCell>{job.parts}</TableCell>
+                  <TableCell>{job.labor}</TableCell>
+                  <TableCell>{job.totalEstimate}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleDeleteJob(job.jobName)} className="bg-red-500 text-white p-1 ml-2">Delete</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
