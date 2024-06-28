@@ -18,7 +18,10 @@ const Index = () => {
           </Link>
           <Link to="/job-configuration" className="text-blue-500 underline">
             Job Configuration
-          </Link> {/* Add Job Configuration link */}
+          </Link>
+          <Link to="/estimate-builder" className="text-blue-500 underline">
+            Build Estimate
+          </Link> {/* Add Build Estimate link */}
         </div>
       </div>
     </div>
