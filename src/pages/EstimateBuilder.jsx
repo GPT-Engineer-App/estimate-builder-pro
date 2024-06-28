@@ -39,6 +39,8 @@ const EstimateBuilder = () => {
     totalEstimate: '',
   });
   const [totalEstimate, setTotalEstimate] = useState(0);
+  const [partsTotal, setPartsTotal] = useState(0);
+  const [laborTotal, setLaborTotal] = useState(0);
 
   useEffect(() => {
     fetchJobCodes(); // Fetch job codes when component mounts
@@ -97,9 +99,15 @@ const EstimateBuilder = () => {
   };
 
   useEffect(() => {
-    // Calculate total estimate
+    // Calculate parts total
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
+    setPartsTotal(partsTotal);
+
+    // Calculate labor total
     const laborTotal = Object.values(labor).reduce((acc, laborItem) => acc + parseFloat(laborItem || 0), 0);
+    setLaborTotal(laborTotal);
+
+    // Calculate total estimate
     setTotalEstimate(partsTotal + laborTotal);
   }, [parts, labor]);
 
@@ -170,6 +178,24 @@ const EstimateBuilder = () => {
             />
           </div>
         ))}
+      </div>
+      <div className="mb-4">
+        <h3 className="text-xl mb-2">Parts Total</h3>
+        <input
+          type="text"
+          value={partsTotal}
+          readOnly
+          className="p-2 border w-full"
+        />
+      </div>
+      <div className="mb-4">
+        <h3 className="text-xl mb-2">Labor Total</h3>
+        <input
+          type="text"
+          value={laborTotal}
+          readOnly
+          className="p-2 border w-full"
+        />
       </div>
       <div className="mb-4">
         <h3 className="text-xl mb-2">Total Estimate</h3>
