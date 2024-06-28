@@ -16,6 +16,7 @@ const EstimateBuilder = () => {
   });
 
   const [jobCode, setJobCode] = useState('');
+  const [jobCodes, setJobCodes] = useState([]); // New state for job codes
   const [parts, setParts] = useState({
     roofKit: '',
     roofMembrane: '',
@@ -37,17 +38,21 @@ const EstimateBuilder = () => {
     tax: '',
     totalEstimate: '',
   });
-  const [jobs, setJobs] = useState([]);
   const [totalEstimate, setTotalEstimate] = useState(0);
 
   useEffect(() => {
-    // Fetch job codes from the database
-    // For now, we'll use dummy data
-    setJobs([
-      { jobCode: 'Job1', parts: { roofKit: 'Kit1', roofMembrane: 'Membrane1' }, labor: { repairDescription: 'Repair1', hrs: '10' } },
-      { jobCode: 'Job2', parts: { roofKit: 'Kit2', roofMembrane: 'Membrane2' }, labor: { repairDescription: 'Repair2', hrs: '20' } },
-    ]);
+    fetchJobCodes(); // Fetch job codes when component mounts
   }, []);
+
+  const fetchJobCodes = async () => {
+    try {
+      const response = await fetch('/api/job-codes'); // Adjust the endpoint as needed
+      const data = await response.json();
+      setJobCodes(data);
+    } catch (error) {
+      console.error('Error fetching job codes:', error);
+    }
+  };
 
   const handleCustomerChange = (event) => {
     const { name, value } = event.target;
@@ -57,13 +62,16 @@ const EstimateBuilder = () => {
     }));
   };
 
-  const handleJobCodeChange = (event) => {
+  const handleJobCodeChange = async (event) => {
     const selectedJobCode = event.target.value;
     setJobCode(selectedJobCode);
-    const selectedJob = jobs.find((job) => job.jobCode === selectedJobCode);
-    if (selectedJob) {
-      setParts(selectedJob.parts);
-      setLabor(selectedJob.labor);
+    try {
+      const response = await fetch(`/api/job-codes/${selectedJobCode}`); // Adjust the endpoint as needed
+      const data = await response.json();
+      setParts(data.parts);
+      setLabor(data.labor);
+    } catch (error) {
+      console.error('Error fetching job details:', error);
     }
   };
 
@@ -126,7 +134,7 @@ const EstimateBuilder = () => {
         <label htmlFor="jobCode" className="block mb-2">Select Job Code:</label>
         <select id="jobCode" value={jobCode} onChange={handleJobCodeChange} className="mb-4 p-2 border w-full">
           <option value="">Select a job code</option>
-          {jobs.map((job) => (
+          {jobCodes.map((job) => (
             <option key={job.jobCode} value={job.jobCode}>{job.jobCode}</option>
           ))}
         </select>
