@@ -97,17 +97,38 @@ const EstimateBuilder = () => {
     console.log('Estimate saved:', { customer, jobCode, parts, labor, totalEstimate });
   };
 
+  const calculateTax = () => {
+    const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
+    return partsTotal * 0.0825;
+  };
+
+  const calculateLabor = () => {
+    return parseFloat(labor.hrs || 0) * parseFloat(labor.laborHr || 0);
+  };
+
+  const calculateLaborTotal = () => {
+    return calculateLabor() + parseFloat(labor.sublet || 0);
+  };
+
+  const calculateEstimateTotal = () => {
+    const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
+    const laborTotal = calculateLaborTotal();
+    const tax = calculateTax();
+    return partsTotal + parseFloat(parts.extras || 0) + parseFloat(parts.shopSupplies || 0) + laborTotal + tax;
+  };
+
   useEffect(() => {
     // Calculate parts total
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
     setPartsTotal(partsTotal);
 
     // Calculate labor total
-    const laborTotal = Object.values(labor).reduce((acc, laborItem) => acc + parseFloat(laborItem || 0), 0);
+    const laborTotal = calculateLaborTotal();
     setLaborTotal(laborTotal);
 
     // Calculate total estimate
-    setTotalEstimate(partsTotal + laborTotal);
+    const totalEstimate = calculateEstimateTotal();
+    setTotalEstimate(totalEstimate);
   }, [parts, labor]);
 
   return (
