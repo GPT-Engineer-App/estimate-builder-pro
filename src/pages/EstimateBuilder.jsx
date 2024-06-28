@@ -36,7 +36,6 @@ const EstimateBuilder = () => {
     labor: '',
     shopSupplies: '',
     tax: '',
-    totalEstimate: '',
   });
   const [totalEstimate, setTotalEstimate] = useState(0);
   const [partsTotal, setPartsTotal] = useState(0);
