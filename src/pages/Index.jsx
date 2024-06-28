@@ -16,6 +16,9 @@ const Index = () => {
           <Link to="/customer-info" className="text-blue-500 underline">
             Customer Information
           </Link>
+          <Link to="/job-configuration" className="text-blue-500 underline">
+            Job Configuration
+          </Link> {/* Add Job Configuration link */}
         </div>
       </div>
     </div>
