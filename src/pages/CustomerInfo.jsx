@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DatePickerDemo } from "@/components/ui/date-picker";
 
 const CustomerInfo = () => {
   const [customer, setCustomer] = useState({
@@ -22,6 +23,13 @@ const CustomerInfo = () => {
     }));
   };
 
+  const handleDateChange = (date) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      date: date,
+    }));
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // Save customer information logic here
@@ -35,14 +43,18 @@ const CustomerInfo = () => {
         {Object.keys(customer).map((key) => (
           <div key={key} className="mb-4">
             <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-            <input
-              type="text"
-              id={key}
-              name={key}
-              value={customer[key]}
-              onChange={handleChange}
-              className="p-2 border w-full"
-            />
+            {key === 'date' ? (
+              <DatePickerDemo selectedDate={customer.date} onDateChange={handleDateChange} />
+            ) : (
+              <input
+                type="text"
+                id={key}
+                name={key}
+                value={customer[key]}
+                onChange={handleChange}
+                className="p-2 border w-full"
+              />
+            )}
           </div>
         ))}
         <button type="submit" className="bg-blue-500 text-white p-2">Save</button>
