@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
+const deductibleAmounts = ["200", "250", "500", "750", "1000", "1500"];
 
 const CustomerInfo = () => {
   const [customer, setCustomer] = useState({
@@ -38,6 +39,13 @@ const CustomerInfo = () => {
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
       paymentType: value,
+    }));
+  };
+
+  const handleDeductibleChange = (value) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      deductible: value,
     }));
   };
 
@@ -85,6 +93,19 @@ const CustomerInfo = () => {
                   {paymentTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : key === 'deductible' ? (
+              <Select onValueChange={handleDeductibleChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select deductible amount" />
+                </SelectTrigger>
+                <SelectContent>
+                  {deductibleAmounts.map((amount) => (
+                    <SelectItem key={amount} value={amount}>
+                      ${amount}
                     </SelectItem>
                   ))}
                 </SelectContent>
