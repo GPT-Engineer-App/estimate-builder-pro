@@ -17,170 +17,55 @@ const fromSupabase = async (query) => {
     return data;
 };
 
-// Hooks for event table
-export const useEvents = () => useQuery({
-    queryKey: ['events'],
-    queryFn: () => fromSupabase(supabase.from('event').select('*')),
-});
+/* supabase integration types
 
-export const useEvent = (id) => useQuery({
-    queryKey: ['event', id],
-    queryFn: () => fromSupabase(supabase.from('event').select('*').eq('id', id).single()),
-});
+// EXAMPLE TYPES SECTION
+// DO NOT USE TYPESCRIPT
 
-export const useAddEvent = () => {
+### foos
+
+| name    | type | format | required |
+|---------|------|--------|----------|
+| id      | int8 | number | true     |
+| title   | text | string | true     |
+| date    | date | string | true     |
+
+### bars
+
+| name    | type | format | required |
+|---------|------|--------|----------|
+| id      | int8 | number | true     |
+| foo_id  | int8 | number | true     |  // foreign key to foos
+	
+*/
+
+// Example hook for models
+
+export const useFoo = ()=> useQuery({
+    queryKey: ['foos'],
+    queryFn: fromSupabase(supabase.from('foos')),
+})
+export const useAddFoo = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newEvent) => fromSupabase(supabase.from('event').insert([newEvent])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('events');
+        mutationFn: (newFoo)=> fromSupabase(supabase.from('foos').insert([{ title: newFoo.title }])),
+        onSuccess: ()=> {
+            queryClient.invalidateQueries('foos');
         },
     });
 };
 
-export const useUpdateEvent = () => {
+export const useBar = ()=> useQuery({
+    queryKey: ['bars'],
+    queryFn: fromSupabase(supabase.from('bars')),
+})
+export const useAddBar = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (updatedEvent) => fromSupabase(supabase.from('event').update(updatedEvent).eq('id', updatedEvent.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('events');
-            queryClient.invalidateQueries(['event', updatedEvent.id]);
+        mutationFn: (newBar)=> fromSupabase(supabase.from('bars').insert([{ foo_id: newBar.foo_id }])),
+        onSuccess: ()=> {
+            queryClient.invalidateQueries('bars');
         },
     });
 };
 
-export const useDeleteEvent = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('event').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('events');
-        },
-    });
-};
-
-// Hooks for customer table
-export const useCustomers = () => useQuery({
-    queryKey: ['customers'],
-    queryFn: () => fromSupabase(supabase.from('customer').select('*')),
-});
-
-export const useCustomer = (id) => useQuery({
-    queryKey: ['customer', id],
-    queryFn: () => fromSupabase(supabase.from('customer').select('*').eq('id', id).single()),
-});
-
-export const useAddCustomer = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newCustomer) => fromSupabase(supabase.from('customer').insert([newCustomer])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('customers');
-        },
-    });
-};
-
-export const useUpdateCustomer = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (updatedCustomer) => fromSupabase(supabase.from('customer').update(updatedCustomer).eq('id', updatedCustomer.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('customers');
-            queryClient.invalidateQueries(['customer', updatedCustomer.id]);
-        },
-    });
-};
-
-export const useDeleteCustomer = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('customer').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('customers');
-        },
-    });
-};
-
-// Hooks for job table
-export const useJobs = () => useQuery({
-    queryKey: ['jobs'],
-    queryFn: () => fromSupabase(supabase.from('job').select('*')),
-});
-
-export const useJob = (id) => useQuery({
-    queryKey: ['job', id],
-    queryFn: () => fromSupabase(supabase.from('job').select('*').eq('id', id).single()),
-});
-
-export const useAddJob = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newJob) => fromSupabase(supabase.from('job').insert([newJob])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('jobs');
-        },
-    });
-};
-
-export const useUpdateJob = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (updatedJob) => fromSupabase(supabase.from('job').update(updatedJob).eq('id', updatedJob.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('jobs');
-            queryClient.invalidateQueries(['job', updatedJob.id]);
-        },
-    });
-};
-
-export const useDeleteJob = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('job').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('jobs');
-        },
-    });
-};
-
-// Hooks for estimate table
-export const useEstimates = () => useQuery({
-    queryKey: ['estimates'],
-    queryFn: () => fromSupabase(supabase.from('estimate').select('*')),
-});
-
-export const useEstimate = (id) => useQuery({
-    queryKey: ['estimate', id],
-    queryFn: () => fromSupabase(supabase.from('estimate').select('*').eq('id', id).single()),
-});
-
-export const useAddEstimate = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newEstimate) => fromSupabase(supabase.from('estimate').insert([newEstimate])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('estimates');
-        },
-    });
-};
-
-export const useUpdateEstimate = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (updatedEstimate) => fromSupabase(supabase.from('estimate').update(updatedEstimate).eq('id', updatedEstimate.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('estimates');
-            queryClient.invalidateQueries(['estimate', updatedEstimate.id]);
-        },
-    });
-};
-
-export const useDeleteEstimate = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('estimate').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('estimates');
-        },
-    });
-};
