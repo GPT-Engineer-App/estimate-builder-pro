@@ -7,66 +7,17 @@ const JobConfiguration = () => {
   const [jobName, setJobName] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [jobPrice, setJobPrice] = useState('');
-  const [parts, setParts] = useState({
-    roofKit: '',
-    roofMembrane: '',
-    slfLvlDicor: '',
-    nonLvlDicor: '',
-    roofScrews: '',
-    glue: '',
-    additionalParts: '',
-  });
-  const [labor, setLabor] = useState({
-    repairDescription: '',
-    notes: '',
-    hrs: '',
-    laborHr: '',
-    sublet: '',
-    extras: '',
-    labor: '',
-    shopSupplies: '',
-    tax: '',
-    totalEstimate: '',
-  });
-  const [jobs, setJobs] = useState([]);
-
-  const handleJobCodeChange = (event) => {
-    setJobCode(event.target.value);
-  };
-
-  const handleJobNameChange = (event) => {
-    setJobName(event.target.value);
-  };
-
-  const handleJobDescriptionChange = (event) => {
-    setJobDescription(event.target.value);
-  };
-
-  const handleJobPriceChange = (event) => {
-    setJobPrice(event.target.value);
-  };
-
-  const handlePartsChange = (event) => {
-    const { name, value } = event.target;
-    setParts((prevParts) => ({
-      ...prevParts,
-      [name]: value,
-    }));
-  };
-
-  const handleLaborChange = (event) => {
-    const { name, value } = event.target;
-    setLabor((prevLabor) => ({
-      ...prevLabor,
-      [name]: value,
-    }));
-  };
+  const [roofKit, setRoofKit] = useState('');
+  const [roofMembrane, setRoofMembrane] = useState('');
+  const [slfLvlDicor, setSlfLvlDicor] = useState('');
+  const [nonLvlDicor, setNonLvlDicor] = useState('');
+  const [roofScrews, setRoofScrews] = useState('');
+  const [glue, setGlue] = useState('');
+  const [additionalParts, setAdditionalParts] = useState('');
+  const [repairDescription, setRepairDescription] = useState('');
 
   const handleSaveJob = async (event) => {
     event.preventDefault();
-
-    const newJob = { jobCode, jobName, jobDescription, jobPrice, parts, labor };
-    setJobs((prevJobs) => [...prevJobs, newJob]);
 
     const { data, error } = await supabase
       .from('pre_configured_jobs')
@@ -75,24 +26,15 @@ const JobConfiguration = () => {
           job_code: jobCode,
           job_name: jobName,
           job_description: jobDescription,
-          job_price: jobPrice,
-          roof_kit: parseFloat(parts.roofKit),
-          roof_membrane: parseFloat(parts.roofMembrane),
-          slf_lvl_dicor: parseFloat(parts.slfLvlDicor),
-          non_lvl_dicor: parseFloat(parts.nonLvlDicor),
-          roof_screws: parseFloat(parts.roofScrews),
-          glue: parseFloat(parts.glue),
-          additional_parts: parseFloat(parts.additionalParts),
-          repair_description: labor.repairDescription,
-          notes: labor.notes,
-          hrs: parseFloat(labor.hrs),
-          labor_per_hr: parseFloat(labor.laborHr),
-          sublet: parseFloat(labor.sublet),
-          extras: parseFloat(labor.extras),
-          labor: parseFloat(labor.labor),
-          shop_supplies: parseFloat(labor.shopSupplies),
-          tax: parseFloat(labor.tax),
-          total_estimate: parseFloat(labor.totalEstimate),
+          job_price: parseFloat(jobPrice),
+          roof_kit: parseFloat(roofKit),
+          roof_membrane: parseFloat(roofMembrane),
+          slf_lvl_dicor: parseFloat(slfLvlDicor),
+          non_lvl_dicor: parseFloat(nonLvlDicor),
+          roof_screws: parseFloat(roofScrews),
+          glue: parseFloat(glue),
+          additional_parts: parseFloat(additionalParts),
+          repair_description: repairDescription
         }
       ]);
 
@@ -108,27 +50,14 @@ const JobConfiguration = () => {
     setJobName('');
     setJobDescription('');
     setJobPrice('');
-    setParts({
-      roofKit: '',
-      roofMembrane: '',
-      slfLvlDicor: '',
-      nonLvlDicor: '',
-      roofScrews: '',
-      glue: '',
-      additionalParts: '',
-    });
-    setLabor({
-      repairDescription: '',
-      notes: '',
-      hrs: '',
-      laborHr: '',
-      sublet: '',
-      extras: '',
-      labor: '',
-      shopSupplies: '',
-      tax: '',
-      totalEstimate: '',
-    });
+    setRoofKit('');
+    setRoofMembrane('');
+    setSlfLvlDicor('');
+    setNonLvlDicor('');
+    setRoofScrews('');
+    setGlue('');
+    setAdditionalParts('');
+    setRepairDescription('');
   };
 
   return (
@@ -143,107 +72,136 @@ const JobConfiguration = () => {
       <h2 className="text-2xl mb-4">Job Configuration</h2>
       <form id="job-config-form" onSubmit={handleSaveJob}>
         <div className="mb-4">
-          <label htmlFor="job-code" className="block mb-2">Job Code:</label>
           <input
             type="text"
             id="job-code"
-            name="jobCode"
+            placeholder="Job Code"
             value={jobCode}
-            onChange={handleJobCodeChange}
-            className="p-2 border w-full"
+            onChange={(e) => setJobCode(e.target.value)}
             required
+            className="p-2 border w-full"
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="job-name" className="block mb-2">Job Name:</label>
           <input
             type="text"
             id="job-name"
-            name="jobName"
+            placeholder="Job Name"
             value={jobName}
-            onChange={handleJobNameChange}
-            className="p-2 border w-full"
+            onChange={(e) => setJobName(e.target.value)}
             required
+            className="p-2 border w-full"
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="job-description" className="block mb-2">Job Description:</label>
           <textarea
             id="job-description"
-            name="jobDescription"
+            placeholder="Job Description"
             value={jobDescription}
-            onChange={handleJobDescriptionChange}
+            onChange={(e) => setJobDescription(e.target.value)}
             className="p-2 border w-full"
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="job-price" className="block mb-2">Job Price:</label>
           <input
             type="number"
             id="job-price"
-            name="jobPrice"
+            placeholder="Job Price"
             value={jobPrice}
-            onChange={handleJobPriceChange}
-            className="p-2 border w-full"
+            onChange={(e) => setJobPrice(e.target.value)}
             step="0.01"
             required
+            className="p-2 border w-full"
           />
         </div>
-        <h3 className="text-xl mb-2">Parts Configuration</h3>
-        {Object.keys(parts).map((key) => (
-          <div key={key} className="mb-4">
-            <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-            <input
-              type="text"
-              id={key}
-              name={key}
-              value={parts[key]}
-              onChange={handlePartsChange}
-              className="p-2 border w-full"
-            />
-          </div>
-        ))}
-        <h3 className="text-xl mb-2">Labor Configuration</h3>
-        {Object.keys(labor).map((key) => (
-          <div key={key} className="mb-4">
-            <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-            <input
-              type="text"
-              id={key}
-              name={key}
-              value={labor[key]}
-              onChange={handleLaborChange}
-              className="p-2 border w-full"
-            />
-          </div>
-        ))}
+        <div className="mb-4">
+          <input
+            type="number"
+            id="roof-kit"
+            placeholder="Roof Kit"
+            value={roofKit}
+            onChange={(e) => setRoofKit(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="roof-membrane"
+            placeholder="Roof Membrane"
+            value={roofMembrane}
+            onChange={(e) => setRoofMembrane(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="slf-lvl-dicor"
+            placeholder="SLF Lvl Dicor"
+            value={slfLvlDicor}
+            onChange={(e) => setSlfLvlDicor(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="non-lvl-dicor"
+            placeholder="Non Lvl Dicor"
+            value={nonLvlDicor}
+            onChange={(e) => setNonLvlDicor(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="roof-screws"
+            placeholder="Roof Screws"
+            value={roofScrews}
+            onChange={(e) => setRoofScrews(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="glue"
+            placeholder="Glue"
+            value={glue}
+            onChange={(e) => setGlue(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="additional-parts"
+            placeholder="Additional Parts"
+            value={additionalParts}
+            onChange={(e) => setAdditionalParts(e.target.value)}
+            step="0.01"
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <textarea
+            id="repair-description"
+            placeholder="Repair Description"
+            value={repairDescription}
+            onChange={(e) => setRepairDescription(e.target.value)}
+            className="p-2 border w-full"
+          />
+        </div>
         <button type="submit" className="bg-blue-500 text-white p-2">Save Job</button>
       </form>
-      <h3 className="text-xl mt-4 mb-2">Existing Jobs</h3>
-      <table className="w-full border">
-        <thead>
-          <tr>
-            <th className="border px-2 py-1">Job Code</th>
-            <th className="border px-2 py-1">Job Name</th>
-            <th className="border px-2 py-1">Job Description</th>
-            <th className="border px-2 py-1">Job Price</th>
-            <th className="border px-2 py-1">Parts</th>
-            <th className="border px-2 py-1">Labor</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobs.map((job, index) => (
-            <tr key={index}>
-              <td className="border px-2 py-1">{job.jobCode}</td>
-              <td className="border px-2 py-1">{job.jobName}</td>
-              <td className="border px-2 py-1">{job.jobDescription}</td>
-              <td className="border px-2 py-1">{job.jobPrice}</td>
-              <td className="border px-2 py-1">{JSON.stringify(job.parts)}</td>
-              <td className="border px-2 py-1">{JSON.stringify(job.labor)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
