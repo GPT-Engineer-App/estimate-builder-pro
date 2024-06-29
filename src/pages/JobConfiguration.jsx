@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../integrations/supabase/index.js';
 
 const JobConfiguration = () => {
   const [jobCode, setJobCode] = useState('');
@@ -91,6 +92,49 @@ const JobConfiguration = () => {
       totalEstimate: '',
     });
   };
+
+  document.getElementById('job-config-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const jobCode = document.getElementById('job-code').value;
+    const jobName = document.getElementById('job-name').value;
+    const jobDescription = document.getElementById('job-description').value;
+    const jobPrice = parseFloat(document.getElementById('job-price').value);
+    const roofKit = parseFloat(document.getElementById('roof-kit').value);
+    const roofMembrane = parseFloat(document.getElementById('roof-membrane').value);
+    const slfLvlDicor = parseFloat(document.getElementById('slf-lvl-dicor').value);
+    const nonLvlDicor = parseFloat(document.getElementById('non-lvl-dicor').value);
+    const roofScrews = parseFloat(document.getElementById('roof-screws').value);
+    const glue = parseFloat(document.getElementById('glue').value);
+    const additionalParts = parseFloat(document.getElementById('additional-parts').value);
+    const repairDescription = document.getElementById('repair-description').value;
+
+    const { data, error } = await supabase
+        .from('pre_configured_jobs')
+        .insert([
+            {
+                job_code: jobCode,
+                job_name: jobName,
+                job_description: jobDescription,
+                job_price: jobPrice,
+                roof_kit: roofKit,
+                roof_membrane: roofMembrane,
+                slf_lvl_dicor: slfLvlDicor,
+                non_lvl_dicor: nonLvlDicor,
+                roof_screws: roofScrews,
+                glue: glue,
+                additional_parts: additionalParts,
+                repair_description: repairDescription
+            }
+        ]);
+
+    if (error) {
+        console.error('Error saving job:', error);
+    } else {
+        console.log('Job saved successfully:', data);
+        alert('Job saved successfully!');
+    }
+  });
 
   return (
     <div className="p-4">
