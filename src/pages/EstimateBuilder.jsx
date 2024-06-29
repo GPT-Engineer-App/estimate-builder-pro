@@ -46,6 +46,7 @@ const EstimateBuilder = () => {
   const [totalEstimate, setTotalEstimate] = useState(0);
   const [partsTotal, setPartsTotal] = useState(0);
   const [laborTotal, setLaborTotal] = useState(0);
+  const [shopSupplies, setShopSupplies] = useState(0);
 
   useEffect(() => {
     fetchJobCodes(); // Fetch job codes when component mounts
@@ -148,7 +149,8 @@ const EstimateBuilder = () => {
 
   const calculateTax = () => {
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
-    return partsTotal * 0.0825;
+    const shopSupplies = partsTotal * 0.07;
+    return (partsTotal + shopSupplies) * 0.0825;
   };
 
   const calculateLabor = () => {
@@ -162,9 +164,10 @@ const EstimateBuilder = () => {
   const calculateEstimateTotal = () => {
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
     const laborTotal = calculateLaborTotal();
+    const shopSupplies = partsTotal * 0.07;
     const tax = calculateTax();
     const deductible = parseFloat(customer.deductible || 0);
-    return partsTotal + parseFloat(parts.extras || 0) + parseFloat(parts.shopSupplies || 0) + laborTotal + tax - deductible;
+    return partsTotal + parseFloat(parts.extras || 0) + shopSupplies + laborTotal + tax - deductible;
   };
 
   useEffect(() => {
@@ -180,6 +183,11 @@ const EstimateBuilder = () => {
     const totalEstimate = calculateEstimateTotal();
     setTotalEstimate(totalEstimate);
   }, [parts, labor, customer.deductible]);
+
+  useEffect(() => {
+    const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
+    setShopSupplies(partsTotal * 0.07);
+  }, [parts]);
 
   return (
     <div className="p-4">
@@ -306,6 +314,24 @@ const EstimateBuilder = () => {
         <input
           type="text"
           value={laborTotal}
+          readOnly
+          className="p-2 border w-full"
+        />
+      </div>
+      <div className="mb-4">
+        <h3 className="text-xl mb-2">Shop Supplies</h3>
+        <input
+          type="text"
+          value={shopSupplies.toFixed(2)}
+          readOnly
+          className="p-2 border w-full"
+        />
+      </div>
+      <div className="mb-4">
+        <h3 className="text-xl mb-2">Tax</h3>
+        <input
+          type="text"
+          value={calculateTax().toFixed(2)}
           readOnly
           className="p-2 border w-full"
         />
