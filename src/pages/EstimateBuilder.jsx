@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 
 const EstimateBuilder = () => {
   const [customer, setCustomer] = useState({
@@ -60,6 +63,13 @@ const EstimateBuilder = () => {
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
       [name]: value,
+    }));
+  };
+
+  const handleAdvisorChange = (value) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      advisor: value,
     }));
   };
 
@@ -157,14 +167,29 @@ const EstimateBuilder = () => {
         {Object.keys(customer).map((key) => (
           <div key={key} className="mb-4">
             <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-            <input
-              type="text"
-              id={key}
-              name={key}
-              value={customer[key]}
-              onChange={handleCustomerChange}
-              className="p-2 border w-full"
-            />
+            {key === 'advisor' ? (
+              <Select onValueChange={handleAdvisorChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select advisor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {advisors.map((advisor) => (
+                    <SelectItem key={advisor} value={advisor}>
+                      {advisor}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <input
+                type="text"
+                id={key}
+                name={key}
+                value={customer[key]}
+                onChange={handleCustomerChange}
+                className="p-2 border w-full"
+              />
+            )}
           </div>
         ))}
       </div>
