@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerDemo } from "@/components/ui/date-picker";
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -45,6 +46,7 @@ const EstimateBuilder = () => {
   const [totalEstimate, setTotalEstimate] = useState(0);
   const [partsTotal, setPartsTotal] = useState(0);
   const [laborTotal, setLaborTotal] = useState(0);
+  const [date, setDate] = useState<Date>();
 
   useEffect(() => {
     fetchJobCodes(); // Fetch job codes when component mounts
@@ -119,6 +121,10 @@ const EstimateBuilder = () => {
     if (name === 'hrs' || name === 'laborHr') {
       calculateLaborCost({ ...labor, [name]: value });
     }
+  };
+
+  const handleDateChange = (selectedDate) => {
+    setDate(selectedDate);
   };
 
   const calculateLaborCost = (updatedLabor) => {
@@ -227,6 +233,8 @@ const EstimateBuilder = () => {
                   ))}
                 </SelectContent>
               </Select>
+            ) : key === 'date' ? (
+              <DatePickerDemo selectedDate={date} onDateChange={handleDateChange} />
             ) : (
               <input
                 type="text"
