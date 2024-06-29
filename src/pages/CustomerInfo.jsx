@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { DatePickerDemo } from "@/components/ui/date-picker";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 
 const CustomerInfo = () => {
   const [customer, setCustomer] = useState({
@@ -20,6 +23,13 @@ const CustomerInfo = () => {
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
       [name]: value,
+    }));
+  };
+
+  const handleAdvisorChange = (value) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      advisor: value,
     }));
   };
 
@@ -45,6 +55,19 @@ const CustomerInfo = () => {
             <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
             {key === 'date' ? (
               <DatePickerDemo selectedDate={customer.date} onDateChange={handleDateChange} />
+            ) : key === 'advisor' ? (
+              <Select onValueChange={handleAdvisorChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select advisor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {advisors.map((advisor) => (
+                    <SelectItem key={advisor} value={advisor}>
+                      {advisor}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             ) : (
               <input
                 type="text"
