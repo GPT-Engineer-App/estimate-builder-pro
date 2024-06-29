@@ -1,3 +1,4 @@
+```jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -247,6 +248,62 @@ const EstimateBuilder = () => {
     setShopSupplies(partsTotal * 0.07);
   }, [parts]);
 
+  const formatPrintedEstimate = () => {
+    return (
+      <div className="printed-estimate">
+        <div className="header-section flex justify-between mb-4">
+          <div className="left">
+            <p>{customer.firstName} {customer.lastName}</p>
+            <p>{customer.phoneNumber}</p>
+            <p>{customer.unitDescription}</p>
+            <p>{customer.vin}</p>
+          </div>
+          <div className="center text-center">
+            <p>RV STATION</p>
+            <p>411 Sherrard St.</p>
+            <p>COLBERT, OK 74336</p>
+            <p>580-579-5036</p>
+          </div>
+          <div className="right text-right">
+            <p>Estimate #: {customer.estimateNumber}</p>
+            <p>Advisor: {customer.advisor}</p>
+            <p>Date: {customer.date}</p>
+          </div>
+        </div>
+        <Separator />
+        <div className="body-section">
+          <div className="page-1">
+            <h3 className="text-xl mb-2">Work to be Performed</h3>
+            <p>{labor.repairDescription}</p>
+            <h3 className="text-xl mb-2">Parts and Materials</h3>
+            {Object.keys(parts).map((key) => (
+              <p key={key}>{key.replace(/([A-Z])/g, ' $1')}: {parts[key]}</p>
+            ))}
+          </div>
+          <div className="page-2">
+            <h3 className="text-xl mb-2">Additional Work to be Performed</h3>
+            <p>{labor.notes}</p>
+            <h3 className="text-xl mb-2">Additional Parts and Materials</h3>
+            <p>{parts.additionalParts}</p>
+            <h3 className="text-xl mb-2">Calculations</h3>
+            <p>Tax: {calculateTax().toFixed(2)}</p>
+            <p>Shop Supplies: {shopSupplies.toFixed(2)}</p>
+            <h3 className="text-xl mb-2">Total Estimate</h3>
+            <p>{totalEstimate.toFixed(2)}</p>
+            <h3 className="text-xl mb-2">Notes</h3>
+            <p>{labor.extras}</p>
+          </div>
+        </div>
+        <Separator />
+        <div className="footer-section mt-4">
+          <p className="text-sm">
+            THIS QUOTE IS SUBJECT TO CHANGE DURING THE COURSE OF THE REPAIR IF ITEMS OR ISSUES ARE TO ARISE. THE CUSTOMER AND/OR COMPANY WILL BE NOTIFIED OF ANY CHANGES. RV STATION WILL NOT BE HELD RESPONSIBLE FOR ANY PREVIOUSLY DAMAGED PARTS THAT WERE NOT APPROVED FOR REPLACEMENT. ALL PAYMENT MUST BE PAID IN FULL TO RELEASE UNIT.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="p-4" ref={estimateRef}>
       <nav className="bg-blue-500 p-4 text-white flex justify-between">
@@ -420,21 +477,9 @@ const EstimateBuilder = () => {
             </button>
           )}
           content={() => estimateRef.current}
+          documentTitle="Estimate"
+          pageStyle="@page { size: auto; margin: 20mm; } @media print { body { -webkit-print-color-adjust: exact; } }"
         />
       </div>
       <style jsx>{`
         @media (max-width: 640px) {
-          .flex {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          .space-x-4 {
-            margin-bottom: 1rem;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default EstimateBuilder;
