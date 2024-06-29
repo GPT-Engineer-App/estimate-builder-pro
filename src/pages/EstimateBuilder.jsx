@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerDemo } from "@/components/ui/date-picker";
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -17,7 +18,7 @@ const EstimateBuilder = () => {
     advisor: '',
     paymentType: '',
     deductible: '',
-    date: '',
+    date: '', // Add date field
   });
 
   const [jobCode, setJobCode] = useState('');
@@ -86,6 +87,13 @@ const EstimateBuilder = () => {
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
       deductible: value,
+    }));
+  };
+
+  const handleDateChange = (date) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      date: date,
     }));
   };
 
@@ -227,6 +235,8 @@ const EstimateBuilder = () => {
                   ))}
                 </SelectContent>
               </Select>
+            ) : key === 'date' ? (
+              <DatePickerDemo selectedDate={customer.date} onDateChange={handleDateChange} />
             ) : (
               <input
                 type="text"
