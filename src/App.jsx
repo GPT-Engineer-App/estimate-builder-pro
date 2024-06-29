@@ -4,6 +4,7 @@ import JobSelection from "./pages/JobSelection.jsx";
 import CustomerInfo from "./pages/CustomerInfo.jsx";
 import JobConfiguration from "./pages/JobConfiguration.jsx";
 import EstimateBuilder from "./pages/EstimateBuilder.jsx"; // Import EstimateBuilder page
+import Events from "./pages/Events.jsx";
 import Navbar from "./components/Navbar.jsx";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/customer-info" element={<CustomerInfo />} />
         <Route exact path="/job-configuration" element={<JobConfiguration />} />
         <Route exact path="/estimate-builder" element={<EstimateBuilder />} /> {/* Add EstimateBuilder route */}
+        <Route exact path="/events" element={<Events />} /> {/* Add Events route */}
       </Routes>
     </Router>
   );

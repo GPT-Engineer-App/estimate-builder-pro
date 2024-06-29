@@ -41,6 +41,9 @@ const Index = () => {
           <Link to="/estimate-builder" className="text-blue-500 underline">
             Build Estimate
           </Link>
+          <Link to="/events" className="text-blue-500 underline">
+            Events
+          </Link> {/* Add Events link */}
         </div>
         <div className="mt-8 flex justify-center space-x-2">
           <input
