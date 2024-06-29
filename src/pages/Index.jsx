@@ -1,7 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const [estimateNumber, setEstimateNumber] = useState('');
+  const [searchMessage, setSearchMessage] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(`/api/estimates/${estimateNumber}`);
+      if (response.ok) {
+        const estimate = await response.json();
+        navigate(`/estimate/${estimate.id}`);
+      } else {
+        setSearchMessage('Estimate number not found.');
+      }
+    } catch (error) {
+      console.error('Error searching estimate:', error);
+      setSearchMessage('An error occurred while searching for the estimate.');
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex items-center justify-center">
       <div>
@@ -21,8 +40,23 @@ const Index = () => {
           </Link>
           <Link to="/estimate-builder" className="text-blue-500 underline">
             Build Estimate
-          </Link> {/* Add Build Estimate link */}
+          </Link>
         </div>
+        <div className="mt-8 flex justify-center space-x-2">
+          <input
+            type="text"
+            placeholder="Estimate Number"
+            value={estimateNumber}
+            onChange={(e) => setEstimateNumber(e.target.value)}
+            className="p-2 border"
+          />
+          <button onClick={handleSearch} className="bg-blue-500 text-white p-2">
+            Search
+          </button>
+        </div>
+        {searchMessage && (
+          <p className="text-center text-red-500 mt-4">{searchMessage}</p>
+        )}
       </div>
     </div>
   );
