@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
+const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
 
 const EstimateBuilder = () => {
   const [customer, setCustomer] = useState({
@@ -70,6 +71,13 @@ const EstimateBuilder = () => {
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
       advisor: value,
+    }));
+  };
+
+  const handlePaymentTypeChange = (value) => {
+    setCustomer((prevCustomer) => ({
+      ...prevCustomer,
+      paymentType: value,
     }));
   };
 
@@ -176,6 +184,19 @@ const EstimateBuilder = () => {
                   {advisors.map((advisor) => (
                     <SelectItem key={advisor} value={advisor}>
                       {advisor}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : key === 'paymentType' ? (
+              <Select onValueChange={handlePaymentTypeChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select payment type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {paymentTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
                     </SelectItem>
                   ))}
                 </SelectContent>
