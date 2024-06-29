@@ -35,7 +35,7 @@ const Index = () => {
           <Link to="/customer-info" className="text-blue-500 underline">
             Customer Information
           </Link>
-          <Link to="/job-configuration" className="text-blue-500 underline">
+          <Link to="/job-configuration" className="text-blue-500 underline font-bold">
             Job Configuration
           </Link>
           <Link to="/estimate-builder" className="text-blue-500 underline">
