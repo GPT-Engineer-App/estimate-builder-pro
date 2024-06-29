@@ -62,9 +62,47 @@ const JobConfiguration = () => {
     }));
   };
 
-  const handleSaveJob = () => {
+  const handleSaveJob = async (event) => {
+    event.preventDefault();
+
     const newJob = { jobCode, jobName, jobDescription, jobPrice, parts, labor };
     setJobs((prevJobs) => [...prevJobs, newJob]);
+
+    const { data, error } = await supabase
+      .from('pre_configured_jobs')
+      .insert([
+        {
+          job_code: jobCode,
+          job_name: jobName,
+          job_description: jobDescription,
+          job_price: jobPrice,
+          roof_kit: parseFloat(parts.roofKit),
+          roof_membrane: parseFloat(parts.roofMembrane),
+          slf_lvl_dicor: parseFloat(parts.slfLvlDicor),
+          non_lvl_dicor: parseFloat(parts.nonLvlDicor),
+          roof_screws: parseFloat(parts.roofScrews),
+          glue: parseFloat(parts.glue),
+          additional_parts: parseFloat(parts.additionalParts),
+          repair_description: labor.repairDescription,
+          notes: labor.notes,
+          hrs: parseFloat(labor.hrs),
+          labor_per_hr: parseFloat(labor.laborHr),
+          sublet: parseFloat(labor.sublet),
+          extras: parseFloat(labor.extras),
+          labor: parseFloat(labor.labor),
+          shop_supplies: parseFloat(labor.shopSupplies),
+          tax: parseFloat(labor.tax),
+          total_estimate: parseFloat(labor.totalEstimate),
+        }
+      ]);
+
+    if (error) {
+      console.error('Error saving job:', error);
+    } else {
+      console.log('Job saved successfully:', data);
+      alert('Job saved successfully!');
+    }
+
     // Clear the form
     setJobCode('');
     setJobName('');
@@ -93,49 +131,6 @@ const JobConfiguration = () => {
     });
   };
 
-  document.getElementById('job-config-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const jobCode = document.getElementById('job-code').value;
-    const jobName = document.getElementById('job-name').value;
-    const jobDescription = document.getElementById('job-description').value;
-    const jobPrice = parseFloat(document.getElementById('job-price').value);
-    const roofKit = parseFloat(document.getElementById('roof-kit').value);
-    const roofMembrane = parseFloat(document.getElementById('roof-membrane').value);
-    const slfLvlDicor = parseFloat(document.getElementById('slf-lvl-dicor').value);
-    const nonLvlDicor = parseFloat(document.getElementById('non-lvl-dicor').value);
-    const roofScrews = parseFloat(document.getElementById('roof-screws').value);
-    const glue = parseFloat(document.getElementById('glue').value);
-    const additionalParts = parseFloat(document.getElementById('additional-parts').value);
-    const repairDescription = document.getElementById('repair-description').value;
-
-    const { data, error } = await supabase
-        .from('pre_configured_jobs')
-        .insert([
-            {
-                job_code: jobCode,
-                job_name: jobName,
-                job_description: jobDescription,
-                job_price: jobPrice,
-                roof_kit: roofKit,
-                roof_membrane: roofMembrane,
-                slf_lvl_dicor: slfLvlDicor,
-                non_lvl_dicor: nonLvlDicor,
-                roof_screws: roofScrews,
-                glue: glue,
-                additional_parts: additionalParts,
-                repair_description: repairDescription
-            }
-        ]);
-
-    if (error) {
-        console.error('Error saving job:', error);
-    } else {
-        console.log('Job saved successfully:', data);
-        alert('Job saved successfully!');
-    }
-  });
-
   return (
     <div className="p-4">
       <nav className="bg-blue-500 p-4 text-white flex justify-between">
@@ -146,7 +141,7 @@ const JobConfiguration = () => {
         </div>
       </nav>
       <h2 className="text-2xl mb-4">Job Configuration</h2>
-      <form id="job-config-form">
+      <form id="job-config-form" onSubmit={handleSaveJob}>
         <div className="mb-4">
           <label htmlFor="job-code" className="block mb-2">Job Code:</label>
           <input
@@ -222,7 +217,7 @@ const JobConfiguration = () => {
             />
           </div>
         ))}
-        <button type="button" onClick={handleSaveJob} className="bg-blue-500 text-white p-2">Save Job</button>
+        <button type="submit" className="bg-blue-500 text-white p-2">Save Job</button>
       </form>
       <h3 className="text-xl mt-4 mb-2">Existing Jobs</h3>
       <table className="w-full border">
