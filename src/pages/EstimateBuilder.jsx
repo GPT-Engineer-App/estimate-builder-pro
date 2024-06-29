@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePickerDemo } from "@/components/ui/date-picker";
+import ReactToPrint from 'react-to-print';
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -47,6 +48,8 @@ const EstimateBuilder = () => {
   const [partsTotal, setPartsTotal] = useState(0);
   const [laborTotal, setLaborTotal] = useState(0);
   const [shopSupplies, setShopSupplies] = useState(0);
+
+  const estimateRef = useRef();
 
   useEffect(() => {
     fetchJobCodes(); // Fetch job codes when component mounts
@@ -190,7 +193,7 @@ const EstimateBuilder = () => {
   }, [parts]);
 
   return (
-    <div className="p-4">
+    <div className="p-4" ref={estimateRef}>
       <nav className="bg-blue-500 p-4 text-white flex justify-between">
         <div className="font-bold">RV STATION</div>
         <div>
@@ -346,6 +349,12 @@ const EstimateBuilder = () => {
         />
       </div>
       <button onClick={handleSaveEstimate} className="bg-blue-500 text-white p-2">Save Estimate</button>
+      <div className="mb-4">
+        <ReactToPrint
+          trigger={() => <button className="bg-blue-500 text-white p-2">Print Estimate</button>}
+          content={() => estimateRef.current}
+        />
+      </div>
     </div>
   );
 };
