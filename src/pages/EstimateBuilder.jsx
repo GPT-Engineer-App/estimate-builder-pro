@@ -6,6 +6,8 @@ import ReactToPrint from 'react-to-print';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Save, Printer } from "lucide-react";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from 'uuid';
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -51,6 +53,7 @@ const EstimateBuilder = () => {
   const [partsTotal, setPartsTotal] = useState(0);
   const [laborTotal, setLaborTotal] = useState(0);
   const [shopSupplies, setShopSupplies] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
   const estimateRef = useRef();
 
@@ -144,13 +147,62 @@ const EstimateBuilder = () => {
     }));
   };
 
-  const handleSaveEstimate = () => {
-    if (customer.paymentType === "Insurance" && !customer.deductible) {
-      alert("Please select a deductible amount before saving the estimate.");
+  const handleSaveEstimate = async () => {
+    // Validate input fields
+    if (!customer.firstName || !customer.lastName || !customer.phoneNumber || !customer.unitDescription || !customer.vin || !customer.advisor || !customer.paymentType || !customer.date) {
+      toast.error("Please fill in all required customer information.");
       return;
     }
-    // Save estimate logic here
-    console.log('Estimate saved:', { customer, jobCode, parts, labor, totalEstimate });
+
+    if (Object.values(parts).some(part => !part) || Object.values(labor).some(lab => !lab)) {
+      toast.error("Please fill in all parts and labor details.");
+      return;
+    }
+
+    if (customer.paymentType === "Insurance" && !customer.deductible) {
+      toast.error("Please select a deductible amount before saving the estimate.");
+      return;
+    }
+
+    // Generate unique identifier
+    const estimateId = uuidv4();
+
+    // Store estimate data
+    const estimateData = {
+      id: estimateId,
+      customer,
+      jobCode,
+      parts,
+      labor,
+      totalEstimate,
+      date: new Date().toISOString(),
+    };
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch('/api/save-estimate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(estimateData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save estimate');
+      }
+
+      // Display confirmation message
+      toast.success(`Estimate saved successfully! Estimate ID: ${estimateId}`);
+
+      // Update user interface
+      setIsSaving(false);
+    } catch (error) {
+      // Handle errors
+      toast.error(`Error saving estimate: ${error.message}`);
+      setIsSaving(false);
+    }
   };
 
   const calculateTax = () => {
@@ -354,10 +406,11 @@ const EstimateBuilder = () => {
       <div className="flex space-x-4 mt-4">
         <button
           onClick={handleSaveEstimate}
-          className="flex items-center bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200"
+          className={`flex items-center ${isSaving ? 'bg-gray-500' : 'bg-blue-500'} text-white p-2 rounded-md shadow-md hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200`}
+          disabled={isSaving}
         >
           <Save className="mr-2" />
-          Save Estimate
+          {isSaving ? 'Saving...' : 'Save Estimate'}
         </button>
         <ReactToPrint
           trigger={() => (
