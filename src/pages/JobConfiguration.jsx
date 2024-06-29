@@ -150,45 +150,35 @@ const JobConfiguration = () => {
             required
           />
         </div>
-        <label htmlFor="jobCode" className="block mb-2">Job Code:</label>
-        <input
-          type="text"
-          id="jobCode"
-          name="jobCode"
-          value={jobCode}
-          onChange={handleJobCodeChange}
-          className="p-2 border w-full"
-        />
-      </div>
-      <h3 className="text-xl mb-2">Parts Configuration</h3>
-      {Object.keys(parts).map((key) => (
-        <div key={key} className="mb-4">
-          <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-          <input
-            type="text"
-            id={key}
-            name={key}
-            value={parts[key]}
-            onChange={handlePartsChange}
-            className="p-2 border w-full"
-          />
-        </div>
-      ))}
-      <h3 className="text-xl mb-2">Labor Configuration</h3>
-      {Object.keys(labor).map((key) => (
-        <div key={key} className="mb-4">
-          <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
-          <input
-            type="text"
-            id={key}
-            name={key}
-            value={labor[key]}
-            onChange={handleLaborChange}
-            className="p-2 border w-full"
-          />
-        </div>
-      ))}
-      <button type="button" onClick={handleSaveJob} className="bg-blue-500 text-white p-2">Save Job</button>
+        <h3 className="text-xl mb-2">Parts Configuration</h3>
+        {Object.keys(parts).map((key) => (
+          <div key={key} className="mb-4">
+            <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
+            <input
+              type="text"
+              id={key}
+              name={key}
+              value={parts[key]}
+              onChange={handlePartsChange}
+              className="p-2 border w-full"
+            />
+          </div>
+        ))}
+        <h3 className="text-xl mb-2">Labor Configuration</h3>
+        {Object.keys(labor).map((key) => (
+          <div key={key} className="mb-4">
+            <label htmlFor={key} className="block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</label>
+            <input
+              type="text"
+              id={key}
+              name={key}
+              value={labor[key]}
+              onChange={handleLaborChange}
+              className="p-2 border w-full"
+            />
+          </div>
+        ))}
+        <button type="button" onClick={handleSaveJob} className="bg-blue-500 text-white p-2">Save Job</button>
       </form>
       <h3 className="text-xl mt-4 mb-2">Existing Jobs</h3>
       <table className="w-full border">
