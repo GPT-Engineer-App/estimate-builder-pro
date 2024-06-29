@@ -5,6 +5,7 @@ import { DatePickerDemo } from "@/components/ui/date-picker";
 import ReactToPrint from 'react-to-print';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Save, Printer } from "lucide-react";
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -350,13 +351,35 @@ const EstimateBuilder = () => {
           className="p-2 border w-full"
         />
       </div>
-      <button onClick={handleSaveEstimate} className="bg-blue-500 text-white p-2">Save Estimate</button>
-      <div className="mb-4">
+      <div className="flex space-x-4 mt-4">
+        <button
+          onClick={handleSaveEstimate}
+          className="flex items-center bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200"
+        >
+          <Save className="mr-2" />
+          Save Estimate
+        </button>
         <ReactToPrint
-          trigger={() => <button className="bg-blue-500 text-white p-2">Print Estimate</button>}
+          trigger={() => (
+            <button className="flex items-center bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 active:bg-blue-700 transition-colors duration-200">
+              <Printer className="mr-2" />
+              Print Estimate
+            </button>
+          )}
           content={() => estimateRef.current}
         />
       </div>
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .flex {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .space-x-4 {
+            margin-bottom: 1rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };
