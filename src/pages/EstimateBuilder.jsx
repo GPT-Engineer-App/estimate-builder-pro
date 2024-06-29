@@ -130,6 +130,10 @@ const EstimateBuilder = () => {
   };
 
   const handleSaveEstimate = () => {
+    if (customer.paymentType === "Insurance" && !customer.deductible) {
+      alert("Please select a deductible amount before saving the estimate.");
+      return;
+    }
     // Save estimate logic here
     console.log('Estimate saved:', { customer, jobCode, parts, labor, totalEstimate });
   };
@@ -151,7 +155,8 @@ const EstimateBuilder = () => {
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
     const laborTotal = calculateLaborTotal();
     const tax = calculateTax();
-    return partsTotal + parseFloat(parts.extras || 0) + parseFloat(parts.shopSupplies || 0) + laborTotal + tax;
+    const deductible = parseFloat(customer.deductible || 0);
+    return partsTotal + parseFloat(parts.extras || 0) + parseFloat(parts.shopSupplies || 0) + laborTotal + tax - deductible;
   };
 
   useEffect(() => {
@@ -166,7 +171,7 @@ const EstimateBuilder = () => {
     // Calculate total estimate
     const totalEstimate = calculateEstimateTotal();
     setTotalEstimate(totalEstimate);
-  }, [parts, labor]);
+  }, [parts, labor, customer.deductible]);
 
   return (
     <div className="p-4">
