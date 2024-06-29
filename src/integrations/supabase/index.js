@@ -104,6 +104,9 @@ export const useAddEstimate = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
         },
+        onError: (error) => {
+            console.error('Error adding estimate:', error);
+        },
     });
 };
 
@@ -114,6 +117,9 @@ export const useUpdateEstimate = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
         },
+        onError: (error) => {
+            console.error('Error updating estimate:', error);
+        },
     });
 };
 
@@ -123,6 +129,9 @@ export const useDeleteEstimate = () => {
         mutationFn: (id) => fromSupabase(supabase.from('estimates').delete().eq('estimate_id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
+        },
+        onError: (error) => {
+            console.error('Error deleting estimate:', error);
         },
     });
 };
@@ -145,6 +154,9 @@ export const useAddPreConfiguredJob = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
         },
+        onError: (error) => {
+            console.error('Error adding pre-configured job:', error);
+        },
     });
 };
 
@@ -155,6 +167,9 @@ export const useUpdatePreConfiguredJob = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
         },
+        onError: (error) => {
+            console.error('Error updating pre-configured job:', error);
+        },
     });
 };
 
@@ -164,6 +179,59 @@ export const useDeletePreConfiguredJob = () => {
         mutationFn: (id) => fromSupabase(supabase.from('pre_configured_jobs').delete().eq('job_id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
+        },
+        onError: (error) => {
+            console.error('Error deleting pre-configured job:', error);
+        },
+    });
+};
+
+// Events hooks
+export const useEvents = () => useQuery({
+    queryKey: ['events'],
+    queryFn: () => fromSupabase(supabase.from('events').select('*')),
+});
+
+export const useEvent = (id) => useQuery({
+    queryKey: ['event', id],
+    queryFn: () => fromSupabase(supabase.from('events').select('*').eq('id', id).single()),
+});
+
+export const useAddEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (newEvent) => fromSupabase(supabase.from('events').insert([newEvent])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('events');
+        },
+        onError: (error) => {
+            console.error('Error adding event:', error);
+        },
+    });
+};
+
+export const useUpdateEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (updatedEvent) => fromSupabase(supabase.from('events').update(updatedEvent).eq('id', updatedEvent.id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('events');
+        },
+        onError: (error) => {
+            console.error('Error updating event:', error);
+        },
+    });
+};
+
+export const useDeleteEvent = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => fromSupabase(supabase.from('events').delete().eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('events');
+        },
+        onError: (error) => {
+            console.error('Error deleting event:', error);
         },
     });
 };
