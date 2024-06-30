@@ -24,69 +24,73 @@ const fromSupabase = async (query) => {
 
 ### estimates
 
-| name               | type        | format | required |
-|--------------------|-------------|--------|----------|
-| estimate_id        | int8        | number | true     |
-| estimate_number    | varchar     | string | true     |
-| first_name         | varchar     | string | true     |
-| last_name          | varchar     | string | true     |
-| phone_number       | varchar     | string | false    |
-| unit_description   | text        | string | false    |
-| vin                | varchar     | string | false    |
-| advisor            | varchar     | string | false    |
-| payment_type       | varchar     | string | false    |
-| deductible         | varchar     | string | false    |
-| estimate_date      | date        | string | false    |
-| roof_kit           | numeric     | number | false    |
-| roof_membrane      | numeric     | number | false    |
-| slf_lvl_dicor      | numeric     | number | false    |
-| non_lvl_dicor      | numeric     | number | false    |
-| roof_screws        | numeric     | number | false    |
-| glue               | numeric     | number | false    |
-| additional_parts   | numeric     | number | false    |
-| repair_description | text        | string | false    |
-| notes              | text        | string | false    |
-| hrs                | numeric     | number | false    |
-| labor_per_hr       | numeric     | number | false    |
-| sublet             | numeric     | number | false    |
-| extras             | numeric     | number | false    |
-| labor              | numeric     | number | false    |
-| shop_supplies      | numeric     | number | false    |
-| tax                | numeric     | number | false    |
-| total_estimate     | numeric     | number | false    |
-| created_at         | timestamp   | string | false    |
-| updated_at         | timestamp   | string | false    |
+| name                | type        | format | required |
+|---------------------|-------------|--------|----------|
+| estimate_id         | int8        | number | true     |
+| estimate_number     | text        | string | true     |
+| first_name          | text        | string | false    |
+| last_name           | text        | string | true     |
+| phone_number        | text        | string | false    |
+| unit_description    | text        | string | false    |
+| vin                 | text        | string | false    |
+| advisor             | text        | string | false    |
+| payment_type        | text        | string | false    |
+| deductible          | text        | string | false    |
+| estimate_date       | date        | string | false    |
+| roof_kit            | numeric     | number | false    |
+| roof_membrane       | numeric     | number | false    |
+| slf_lvl_dicor       | numeric     | number | false    |
+| non_lvl_dicor       | numeric     | number | false    |
+| roof_screws         | numeric     | number | false    |
+| glue                | numeric     | number | false    |
+| additional_parts    | numeric     | number | false    |
+| repair_description  | text        | string | false    |
+| notes               | text        | string | false    |
+| hrs                 | numeric     | number | false    |
+| labor_per_hr        | numeric     | number | false    |
+| sublet              | numeric     | number | false    |
+| extras              | numeric     | number | false    |
+| labor               | numeric     | number | false    |
+| shop_supplies       | numeric     | number | false    |
+| tax                 | numeric     | number | false    |
+| total_estimate      | numeric     | number | false    |
+| created_at          | timestamptz | string | true     |
+| updated_at          | timestamptz | string | true     |
+| job_code            | text        | string | true     |
+| parts_configuration | jsonb       | object | true     |
+| labor_configuration | jsonb       | object | true     |
+| customer_id         | text        | string | true     |
 
 ### pre_configured_jobs
 
-| name               | type        | format | required |
-|--------------------|-------------|--------|----------|
-| job_id             | int8        | number | true     |
-| job_name           | varchar     | string | true     |
-| job_description    | text        | string | false    |
-| job_price          | numeric     | number | true     |
-| roof_kit           | numeric     | number | false    |
-| roof_membrane      | numeric     | number | false    |
-| slf_lvl_dicor      | numeric     | number | false    |
-| non_lvl_dicor      | numeric     | number | false    |
-| roof_screws        | numeric     | number | false    |
-| glue               | numeric     | number | false    |
-| additional_parts   | numeric     | number | false    |
-| repair_description | text        | string | false    |
-| notes              | text        | string | false    |
-| hrs                | numeric     | number | false    |
-| labor_per_hr       | numeric     | number | false    |
-| sublet             | numeric     | number | false    |
-| extras             | numeric     | number | false    |
-| labor              | numeric     | number | false    |
-| shop_supplies      | numeric     | number | false    |
-| tax                | numeric     | number | false    |
-| created_at         | timestamp   | string | false    |
-| updated_at         | timestamp   | string | false    |
+| name              | type    | format | required |
+|-------------------|---------|--------|----------|
+| id                | int8    | number | true     |
+| job_code          | text    | string | false    |
+| job_name          | text    | string | false    |
+| job_description   | text    | string | false    |
+| job_price         | numeric | number | false    |
+| roof_kit          | numeric | number | false    |
+| roof_membrane     | numeric | number | false    |
+| slf_lvl_dicor     | numeric | number | false    |
+| non_lvl_dicor     | numeric | number | false    |
+| roof_screws       | numeric | number | false    |
+| glue              | numeric | number | false    |
+| additional_parts  | numeric | number | false    |
+| repair_description| text    | string | false    |
+
+### events
+
+| name       | type        | format | required |
+|------------|-------------|--------|----------|
+| id         | int8        | number | true     |
+| name       | text        | string | true     |
+| created_at | timestamptz | string | true     |
+| date       | date        | string | true     |
 
 */
 
-// Estimates hooks
+// Hooks for estimates
 export const useEstimates = () => useQuery({
     queryKey: ['estimates'],
     queryFn: () => fromSupabase(supabase.from('estimates').select('*')),
@@ -104,9 +108,6 @@ export const useAddEstimate = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
         },
-        onError: (error) => {
-            console.error('Error adding estimate:', error);
-        },
     });
 };
 
@@ -116,9 +117,6 @@ export const useUpdateEstimate = () => {
         mutationFn: (updatedEstimate) => fromSupabase(supabase.from('estimates').update(updatedEstimate).eq('estimate_id', updatedEstimate.estimate_id)),
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
-        },
-        onError: (error) => {
-            console.error('Error updating estimate:', error);
         },
     });
 };
@@ -130,13 +128,10 @@ export const useDeleteEstimate = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('estimates');
         },
-        onError: (error) => {
-            console.error('Error deleting estimate:', error);
-        },
     });
 };
 
-// Pre-configured jobs hooks
+// Hooks for pre_configured_jobs
 export const usePreConfiguredJobs = () => useQuery({
     queryKey: ['pre_configured_jobs'],
     queryFn: () => fromSupabase(supabase.from('pre_configured_jobs').select('*')),
@@ -144,7 +139,7 @@ export const usePreConfiguredJobs = () => useQuery({
 
 export const usePreConfiguredJob = (id) => useQuery({
     queryKey: ['pre_configured_job', id],
-    queryFn: () => fromSupabase(supabase.from('pre_configured_jobs').select('*').eq('job_id', id).single()),
+    queryFn: () => fromSupabase(supabase.from('pre_configured_jobs').select('*').eq('id', id).single()),
 });
 
 export const useAddPreConfiguredJob = () => {
@@ -154,21 +149,15 @@ export const useAddPreConfiguredJob = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
         },
-        onError: (error) => {
-            console.error('Error adding pre-configured job:', error);
-        },
     });
 };
 
 export const useUpdatePreConfiguredJob = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (updatedJob) => fromSupabase(supabase.from('pre_configured_jobs').update(updatedJob).eq('job_id', updatedJob.job_id)),
+        mutationFn: (updatedJob) => fromSupabase(supabase.from('pre_configured_jobs').update(updatedJob).eq('id', updatedJob.id)),
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
-        },
-        onError: (error) => {
-            console.error('Error updating pre-configured job:', error);
         },
     });
 };
@@ -176,17 +165,14 @@ export const useUpdatePreConfiguredJob = () => {
 export const useDeletePreConfiguredJob = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('pre_configured_jobs').delete().eq('job_id', id)),
+        mutationFn: (id) => fromSupabase(supabase.from('pre_configured_jobs').delete().eq('id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries('pre_configured_jobs');
-        },
-        onError: (error) => {
-            console.error('Error deleting pre-configured job:', error);
         },
     });
 };
 
-// Events hooks
+// Hooks for events
 export const useEvents = () => useQuery({
     queryKey: ['events'],
     queryFn: () => fromSupabase(supabase.from('events').select('*')),
@@ -204,9 +190,6 @@ export const useAddEvent = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('events');
         },
-        onError: (error) => {
-            console.error('Error adding event:', error);
-        },
     });
 };
 
@@ -217,9 +200,6 @@ export const useUpdateEvent = () => {
         onSuccess: () => {
             queryClient.invalidateQueries('events');
         },
-        onError: (error) => {
-            console.error('Error updating event:', error);
-        },
     });
 };
 
@@ -229,9 +209,6 @@ export const useDeleteEvent = () => {
         mutationFn: (id) => fromSupabase(supabase.from('events').delete().eq('id', id)),
         onSuccess: () => {
             queryClient.invalidateQueries('events');
-        },
-        onError: (error) => {
-            console.error('Error deleting event:', error);
         },
     });
 };
