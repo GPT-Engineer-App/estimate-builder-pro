@@ -169,19 +169,18 @@ const EstimateBuilder = () => {
 
     // Store estimate data
     const estimateData = {
-      id: estimateId,
-      customer,
+      estimateNumber: estimateId,
+      customerId: customer.id, // Assuming customer ID is available in the customer object
       jobCode,
-      parts,
-      labor,
+      partsConfiguration: parts,
+      laborConfiguration: labor,
       totalEstimate,
-      date: new Date().toISOString(),
     };
 
     setIsSaving(true);
 
     try {
-      const response = await fetch('/api/save-estimate', {
+      const response = await fetch('/api/estimates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
