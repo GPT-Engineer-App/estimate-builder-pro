@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/index.js';
 
@@ -15,6 +15,23 @@ const JobConfiguration = () => {
   const [glue, setGlue] = useState('');
   const [additionalParts, setAdditionalParts] = useState('');
   const [repairDescription, setRepairDescription] = useState('');
+  const [preConfiguredJobs, setPreConfiguredJobs] = useState([]);
+
+  async function fetchPreConfiguredJobs() {
+    const { data, error } = await supabase
+      .from('pre_configured_jobs')
+      .select('job_code, job_name');
+
+    if (error) {
+      console.error('Error fetching pre-configured jobs:', error);
+    } else {
+      setPreConfiguredJobs(data);
+    }
+  }
+
+  useEffect(() => {
+    fetchPreConfiguredJobs();
+  }, []);
 
   const handleSaveJob = async (event) => {
     event.preventDefault();
@@ -72,15 +89,12 @@ const JobConfiguration = () => {
       <h2 className="text-2xl mb-4">Job Configuration</h2>
       <form id="job-config-form" onSubmit={handleSaveJob}>
         <div className="mb-4">
-          <input
-            type="text"
-            id="job-code"
-            placeholder="Job Code"
-            value={jobCode}
-            onChange={(e) => setJobCode(e.target.value)}
-            required
-            className="p-2 border w-full"
-          />
+          <select id="job-code-dropdown" value={jobCode} onChange={(e) => setJobCode(e.target.value)} className="mb-4 p-2 border w-full">
+            <option value="">Select a job</option>
+            {preConfiguredJobs.map((job) => (
+              <option key={job.job_code} value={job.job_code}>{job.job_name}</option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <input
