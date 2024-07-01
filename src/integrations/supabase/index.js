@@ -13,10 +13,7 @@ export function SupabaseProvider({ children }) {
 
 const fromSupabase = async (query) => {
     const { data, error } = await query;
-    if (error) {
-        console.error(error);
-        throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
     return data;
 };
 
@@ -24,60 +21,60 @@ const fromSupabase = async (query) => {
 
 ### estimates
 
-| name                | type        | format | required |
-|---------------------|-------------|--------|----------|
-| estimate_id         | int8        | number | true     |
-| estimate_number     | text        | string | true     |
-| first_name          | text        | string | false    |
-| last_name           | text        | string | true     |
-| phone_number        | text        | string | false    |
-| unit_description    | text        | string | false    |
-| vin                 | text        | string | false    |
-| advisor             | text        | string | false    |
-| payment_type        | text        | string | false    |
-| deductible          | text        | string | false    |
-| estimate_date       | date        | string | false    |
-| roof_kit            | numeric     | number | false    |
-| roof_membrane       | numeric     | number | false    |
-| slf_lvl_dicor       | numeric     | number | false    |
-| non_lvl_dicor       | numeric     | number | false    |
-| roof_screws         | numeric     | number | false    |
-| glue                | numeric     | number | false    |
-| additional_parts    | numeric     | number | false    |
-| repair_description  | text        | string | false    |
-| notes               | text        | string | false    |
-| hrs                 | numeric     | number | false    |
-| labor_per_hr        | numeric     | number | false    |
-| sublet              | numeric     | number | false    |
-| extras              | numeric     | number | false    |
-| labor               | numeric     | number | false    |
-| shop_supplies       | numeric     | number | false    |
-| tax                 | numeric     | number | false    |
-| total_estimate      | numeric     | number | false    |
-| created_at          | timestamptz | string | true     |
-| updated_at          | timestamptz | string | true     |
-| job_code            | text        | string | true     |
-| parts_configuration | jsonb       | object | true     |
-| labor_configuration | jsonb       | object | true     |
-| customer_id         | text        | string | true     |
+| name                | type    | format | required |
+|---------------------|---------|--------|----------|
+| estimate_id         | integer | number | true     |
+| estimate_number     | text    | string | true     |
+| first_name          | text    | string | false    |
+| last_name           | text    | string | true     |
+| phone_number        | text    | string | false    |
+| unit_description    | text    | string | false    |
+| vin                 | text    | string | false    |
+| advisor             | text    | string | false    |
+| payment_type        | text    | string | false    |
+| deductible          | text    | string | false    |
+| estimate_date       | date    | string | false    |
+| roof_kit            | numeric | number | false    |
+| roof_membrane       | numeric | number | false    |
+| slf_lvl_dicor       | numeric | number | false    |
+| non_lvl_dicor       | numeric | number | false    |
+| roof_screws         | numeric | number | false    |
+| glue                | numeric | number | false    |
+| additional_parts    | numeric | number | false    |
+| repair_description  | text    | string | false    |
+| notes               | text    | string | false    |
+| hrs                 | numeric | number | false    |
+| labor_per_hr        | numeric | number | false    |
+| sublet              | numeric | number | false    |
+| extras              | numeric | number | false    |
+| labor               | numeric | number | false    |
+| shop_supplies       | numeric | number | false    |
+| tax                 | numeric | number | false    |
+| total_estimate      | numeric | number | false    |
+| created_at          | timestamptz | string | false    |
+| updated_at          | timestamptz | string | false    |
+| job_code            | text    | string | true     |
+| parts_configuration | jsonb   | object | false    |
+| labor_configuration | jsonb   | object | false    |
+| customer_id         | text    | string | true     |
 
 ### pre_configured_jobs
 
-| name              | type    | format | required |
-|-------------------|---------|--------|----------|
-| id                | int8    | number | true     |
-| job_code          | text    | string | false    |
-| job_name          | text    | string | false    |
-| job_description   | text    | string | false    |
-| job_price         | numeric | number | false    |
-| roof_kit          | numeric | number | false    |
-| roof_membrane     | numeric | number | false    |
-| slf_lvl_dicor     | numeric | number | false    |
-| non_lvl_dicor     | numeric | number | false    |
-| roof_screws       | numeric | number | false    |
-| glue              | numeric | number | false    |
-| additional_parts  | numeric | number | false    |
-| repair_description| text    | string | false    |
+| name                | type    | format | required |
+|---------------------|---------|--------|----------|
+| id                  | bigint  | number | true     |
+| job_code            | text    | string | false    |
+| job_name            | text    | string | false    |
+| job_description     | text    | string | false    |
+| job_price           | numeric | number | false    |
+| roof_kit            | numeric | number | false    |
+| roof_membrane       | numeric | number | false    |
+| slf_lvl_dicor       | numeric | number | false    |
+| non_lvl_dicor       | numeric | number | false    |
+| roof_screws         | numeric | number | false    |
+| glue                | numeric | number | false    |
+| additional_parts    | numeric | number | false    |
+| repair_description  | text    | string | false    |
 
 ### events
 
@@ -87,10 +84,10 @@ const fromSupabase = async (query) => {
 | name       | text        | string | true     |
 | created_at | timestamptz | string | true     |
 | date       | date        | string | true     |
-
 */
 
 // Hooks for estimates
+
 export const useEstimates = () => useQuery({
     queryKey: ['estimates'],
     queryFn: () => fromSupabase(supabase.from('estimates').select('*')),
@@ -132,6 +129,7 @@ export const useDeleteEstimate = () => {
 };
 
 // Hooks for pre_configured_jobs
+
 export const usePreConfiguredJobs = () => useQuery({
     queryKey: ['pre_configured_jobs'],
     queryFn: () => fromSupabase(supabase.from('pre_configured_jobs').select('*')),
@@ -173,6 +171,7 @@ export const useDeletePreConfiguredJob = () => {
 };
 
 // Hooks for events
+
 export const useEvents = () => useQuery({
     queryKey: ['events'],
     queryFn: () => fromSupabase(supabase.from('events').select('*')),
