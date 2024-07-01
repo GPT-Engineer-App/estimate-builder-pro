@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../integrations/supabase/index.js';
+import { savePreConfiguredJob, fetchPreConfiguredJobs } from '../api/preConfiguredJobs.js';
 
 const JobConfiguration = () => {
   const [jobCode, setJobCode] = useState('');
@@ -18,14 +18,11 @@ const JobConfiguration = () => {
   const [preConfiguredJobs, setPreConfiguredJobs] = useState([]);
 
   async function fetchPreConfiguredJobs() {
-    const { data, error } = await supabase
-      .from('pre_configured_jobs')
-      .select('job_code, job_name');
-
-    if (error) {
-      console.error('Error fetching pre-configured jobs:', error);
-    } else {
+    try {
+      const data = await fetchPreConfiguredJobs();
       setPreConfiguredJobs(data);
+    } catch (error) {
+      console.error('Error fetching pre-configured jobs:', error);
     }
   }
 
@@ -36,30 +33,27 @@ const JobConfiguration = () => {
   const handleSaveJob = async (event) => {
     event.preventDefault();
 
-    const { data, error } = await supabase
-      .from('pre_configured_jobs')
-      .insert([
-        {
-          job_code: jobCode,
-          job_name: jobName,
-          job_description: jobDescription,
-          job_price: parseFloat(jobPrice),
-          roof_kit: parseFloat(roofKit),
-          roof_membrane: parseFloat(roofMembrane),
-          slf_lvl_dicor: parseFloat(slfLvlDicor),
-          non_lvl_dicor: parseFloat(nonLvlDicor),
-          roof_screws: parseFloat(roofScrews),
-          glue: parseFloat(glue),
-          additional_parts: parseFloat(additionalParts),
-          repair_description: repairDescription
-        }
-      ]);
+    const job = {
+      job_code: jobCode,
+      job_name: jobName,
+      job_description: jobDescription,
+      job_price: parseFloat(jobPrice),
+      roof_kit: parseFloat(roofKit),
+      roof_membrane: parseFloat(roofMembrane),
+      slf_lvl_dicor: parseFloat(slfLvlDicor),
+      non_lvl_dicor: parseFloat(nonLvlDicor),
+      roof_screws: parseFloat(roofScrews),
+      glue: parseFloat(glue),
+      additional_parts: parseFloat(additionalParts),
+      repair_description: repairDescription
+    };
 
-    if (error) {
-      console.error('Error saving job:', error);
-    } else {
+    try {
+      const data = await savePreConfiguredJob(job);
       console.log('Job saved successfully:', data);
       alert('Job saved successfully!');
+    } catch (error) {
+      console.error('Error saving job:', error);
     }
 
     // Clear the form
