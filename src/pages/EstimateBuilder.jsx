@@ -321,7 +321,7 @@ const EstimateBuilder = () => {
         <select id="jobCode" value={jobCode} onChange={handleJobCodeChange} className="mb-4 p-2 border w-full">
           <option value="">Select a job code</option>
           {jobCodes.map((job) => (
-            <option key={job.jobCode} value={job.jobCode}>{job.jobCode}</option>
+            <option key={job.id} value={job.job_code}>{job.job_code}</option>
           ))}
         </select>
       </div>
