@@ -17,17 +17,17 @@ const JobConfiguration = () => {
   const [repairDescription, setRepairDescription] = useState('');
   const [preConfiguredJobs, setPreConfiguredJobs] = useState([]);
 
-  async function fetchPreConfiguredJobs() {
-    try {
-      const data = await fetchPreConfiguredJobs();
-      setPreConfiguredJobs(data);
-    } catch (error) {
-      console.error('Error fetching pre-configured jobs:', error);
-    }
-  }
-
   useEffect(() => {
-    fetchPreConfiguredJobs();
+    const fetchJobs = async () => {
+      try {
+        const data = await fetchPreConfiguredJobs();
+        setPreConfiguredJobs(data);
+      } catch (error) {
+        console.error('Error fetching pre-configured jobs:', error);
+      }
+    };
+
+    fetchJobs();
   }, []);
 
   const handleSaveJob = async (event) => {
