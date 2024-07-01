@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Save, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from 'uuid';
-import { fetchPreConfiguredJobs } from '../api/preConfiguredJobs.js';
+import { fetchPreConfiguredJobs, fetchJobDetails } from '../api/preConfiguredJobs.js';
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -110,13 +110,10 @@ const EstimateBuilder = () => {
   const handleJobCodeChange = async (event) => {
     const selectedJobCode = event.target.value;
     setJobCode(selectedJobCode);
-    try {
-      const response = await fetch(`/api/job-codes/${selectedJobCode}`); // Adjust the endpoint as needed
-      const data = await response.json();
-      setParts(data.parts);
-      setLabor(data.labor);
-    } catch (error) {
-      console.error('Error fetching job details:', error);
+    const jobDetails = await fetchJobDetails(selectedJobCode);
+    if (jobDetails) {
+      setParts(jobDetails.parts);
+      setLabor(jobDetails.labor);
     }
   };
 

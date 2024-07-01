@@ -35,3 +35,18 @@ export const fetchPreConfiguredJobs = async (filters = {}, sort = {}) => {
 
   return data;
 };
+
+// Fetch Detailed Job Information
+export const fetchJobDetails = async (jobCode) => {
+  const { data, error } = await supabase
+    .from('pre_configured_jobs')
+    .select('*')
+    .eq('job_code', jobCode)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
