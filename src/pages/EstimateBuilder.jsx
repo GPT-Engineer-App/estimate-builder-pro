@@ -98,6 +98,9 @@ const EstimateBuilder = () => {
       ...prevCustomer,
       deductible: value,
     }));
+    // Recalculate total estimate when deductible changes
+    const updatedTotalEstimate = calculateEstimateTotal(parts, labor, value);
+    setTotalEstimate(updatedTotalEstimate);
   };
 
   const handleDateChange = (date) => {
@@ -218,13 +221,13 @@ const EstimateBuilder = () => {
     return calculateLabor() + parseFloat(labor.sublet || 0);
   };
 
-  const calculateEstimateTotal = () => {
+  const calculateEstimateTotal = (parts, labor, deductible) => {
     const partsTotal = Object.values(parts).reduce((acc, part) => acc + parseFloat(part || 0), 0);
     const laborTotal = calculateLaborTotal();
     const shopSupplies = partsTotal * 0.07;
     const tax = calculateTax();
-    const deductible = parseFloat(customer.deductible || 0);
-    return partsTotal + parseFloat(parts.extras || 0) + shopSupplies + laborTotal + tax - deductible;
+    const deductibleAmount = parseFloat(deductible || 0);
+    return partsTotal + parseFloat(parts.extras || 0) + shopSupplies + laborTotal + tax - deductibleAmount;
   };
 
   useEffect(() => {
@@ -237,7 +240,7 @@ const EstimateBuilder = () => {
     setLaborTotal(laborTotal);
 
     // Calculate total estimate
-    const totalEstimate = calculateEstimateTotal();
+    const totalEstimate = calculateEstimateTotal(parts, labor, customer.deductible);
     setTotalEstimate(totalEstimate);
   }, [parts, labor, customer.deductible]);
 
