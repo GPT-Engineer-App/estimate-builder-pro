@@ -15,6 +15,8 @@ const JobConfiguration = () => {
   const [glue, setGlue] = useState('');
   const [additionalParts, setAdditionalParts] = useState('');
   const [repairDescription, setRepairDescription] = useState('');
+  const [hrs, setHrs] = useState(''); // New state for Hrs
+  const [laborHr, setLaborHr] = useState(''); // New state for Labor Hr
   const [preConfiguredJobs, setPreConfiguredJobs] = useState([]);
 
   useEffect(() => {
@@ -33,6 +35,12 @@ const JobConfiguration = () => {
   const handleSaveJob = async (event) => {
     event.preventDefault();
 
+    // Validate numeric fields
+    if (isNaN(hrs) || isNaN(laborHr)) {
+      alert('Please enter valid numeric values for Hrs and Labor Hr.');
+      return;
+    }
+
     const job = {
       job_code: jobCode,
       job_name: jobName,
@@ -45,11 +53,25 @@ const JobConfiguration = () => {
       roof_screws: parseFloat(roofScrews),
       glue: parseFloat(glue),
       additional_parts: parseFloat(additionalParts),
-      repair_description: repairDescription
+      repair_description: repairDescription,
+      hrs: parseFloat(hrs), // Include Hrs in the payload
+      labor_hr: parseFloat(laborHr) // Include Labor Hr in the payload
     };
 
     try {
-      const data = await savePreConfiguredJob(job);
+      const response = await fetch('https://<your-project-id>.supabase.co/rest/v1/rpc/create_job', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(job),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save job');
+      }
+
+      const data = await response.json();
       console.log('Job saved successfully:', data);
       alert('Job saved successfully!');
     } catch (error) {
@@ -69,6 +91,8 @@ const JobConfiguration = () => {
     setGlue('');
     setAdditionalParts('');
     setRepairDescription('');
+    setHrs(''); // Clear Hrs field
+    setLaborHr(''); // Clear Labor Hr field
   };
 
   return (
@@ -205,6 +229,30 @@ const JobConfiguration = () => {
             placeholder="Repair Description"
             value={repairDescription}
             onChange={(e) => setRepairDescription(e.target.value)}
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="hrs"
+            placeholder="Hrs"
+            value={hrs}
+            onChange={(e) => setHrs(e.target.value)}
+            step="0.01"
+            required
+            className="p-2 border w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <input
+            type="number"
+            id="labor-hr"
+            placeholder="Labor Hr"
+            value={laborHr}
+            onChange={(e) => setLaborHr(e.target.value)}
+            step="0.01"
+            required
             className="p-2 border w-full"
           />
         </div>
