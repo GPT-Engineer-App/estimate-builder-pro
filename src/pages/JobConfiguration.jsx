@@ -59,7 +59,7 @@ const JobConfiguration = () => {
     };
 
     try {
-      const response = await fetch('https://<your-project-id>.supabase.co/rest/v1/rpc/create_job', {
+      const response = await fetch('/api/job-configurations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

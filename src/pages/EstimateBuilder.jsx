@@ -117,8 +117,11 @@ const EstimateBuilder = () => {
 
     if (jobCode) {
       try {
-        const response = await axios.get(`/api/job-configurations/${jobCode}`);
-        const jobConfiguration = response.data;
+        const response = await fetch(`/api/job-configurations/${jobCode}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch job configuration');
+        }
+        const jobConfiguration = await response.json();
         setParts({
           roofKit: jobConfiguration.roof_kit,
           roofMembrane: jobConfiguration.roof_membrane,
