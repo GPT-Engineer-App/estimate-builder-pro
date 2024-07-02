@@ -9,6 +9,7 @@ import { Save, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from 'uuid';
 import { fetchPreConfiguredJobs } from '../api/preConfiguredJobs.js';
+import axios from 'axios';
 
 const advisors = ["Mark W.", "Alicia E.", "Katrina B.", "Josh B.", "Rick S."];
 const paymentTypes = ["Customer", "Dealership", "Warranty", "Ext Warranty", "Insurance"];
@@ -111,15 +112,57 @@ const EstimateBuilder = () => {
   };
 
   const handleJobCodeChange = async (event) => {
-    const selectedJobCode = event.target.value;
-    setJobCode(selectedJobCode);
-    try {
-      const response = await fetch(`/api/job-codes/${selectedJobCode}`); // Adjust the endpoint as needed
-      const data = await response.json();
-      setParts(data.parts);
-      setLabor(data.labor);
-    } catch (error) {
-      console.error('Error fetching job details:', error);
+    const jobCode = event.target.value;
+    setJobCode(jobCode);
+
+    if (jobCode) {
+      try {
+        const response = await axios.get(`/api/job-configurations/${jobCode}`);
+        const jobConfiguration = response.data;
+        setParts({
+          roofKit: jobConfiguration.roof_kit,
+          roofMembrane: jobConfiguration.roof_membrane,
+          slfLvlDicor: jobConfiguration.slf_lvl_dicor,
+          nonLvlDicor: jobConfiguration.non_lvl_dicor,
+          roofScrews: jobConfiguration.roof_screws,
+          glue: jobConfiguration.glue,
+          additionalParts: jobConfiguration.additional_parts,
+        });
+        setLabor({
+          repairDescription: jobConfiguration.repair_description,
+          notes: jobConfiguration.notes,
+          hrs: jobConfiguration.hrs,
+          laborHr: jobConfiguration.labor_hr,
+          sublet: jobConfiguration.sublet,
+          extras: jobConfiguration.extras,
+          labor: jobConfiguration.labor,
+          shopSupplies: jobConfiguration.shop_supplies,
+          tax: jobConfiguration.tax,
+        });
+      } catch (error) {
+        console.error('Error fetching job configuration:', error);
+      }
+    } else {
+      setParts({
+        roofKit: '',
+        roofMembrane: '',
+        slfLvlDicor: '',
+        nonLvlDicor: '',
+        roofScrews: '',
+        glue: '',
+        additionalParts: '',
+      });
+      setLabor({
+        repairDescription: '',
+        notes: '',
+        hrs: '',
+        laborHr: '',
+        sublet: '',
+        extras: '',
+        labor: '',
+        shopSupplies: '',
+        tax: '',
+      });
     }
   };
 
